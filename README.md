@@ -23,6 +23,8 @@
         - Two Arm Bandit/ .. solutions ..
     - Question 2/ .. solutions ..
 
+    - requirements.txt
+
 ## How to install environments
 - Download the zip, extract
 - Move to the parent directory CS698R-Abhinav-Kumar-16907018-ASSIGN-1/
@@ -55,9 +57,17 @@
 - solutions contain function definitions and are documented
 
 ## Dependencies
+
 - python 3
+
+Install the following using pip
+
 - numpy
 - gym
 - matplotlib
 - scipy
 - tqdm
+
+Or run using conda
+
+- $ conda create --name <env_name> --file requirements.txt
