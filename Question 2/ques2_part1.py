@@ -26,6 +26,7 @@ def generateTrajectory(env, policy, maxSteps):
 if __name__ == '__main__':
     
     SEED = 0
+    print('-----------------Generate Trajectory---------------------')
     for i in range(10):
         print(f'Seed Value = {SEED}')
         env = gym.make('random_walk-v0', seed=SEED)

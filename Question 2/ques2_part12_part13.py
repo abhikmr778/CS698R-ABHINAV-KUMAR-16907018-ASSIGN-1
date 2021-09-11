@@ -70,30 +70,34 @@ if __name__ == "__main__":
 
     episodes = [i for i in range(len(G_hist_v3_fvmc))]
     plt.figure(figsize=(12,8))
+    plt.rcParams.update({'font.size': 14})
+    ax = plt.subplot(111)
     # for i in range(1,env.observation_space.n-1):
         # smooth_v = smooth_array(v_history_fvmc[:,i], 10)
-    plt.plot(episodes, G_hist_v3_fvmc, 'r*')
-    plt.plot(episodes, [true_V_est[3] for j in range(len(G_hist_v3_fvmc))], 'k--', label='true state-value V(3)')
+    ax.plot(episodes, G_hist_v3_fvmc, 'r*', linewidth=2)
+    ax.plot(episodes, [true_V_est[3] for j in range(len(G_hist_v3_fvmc))], 'k--', label='true state-value V(3)', linewidth=2)
     
     plt.xlabel('Estimate sequence number')
     plt.ylabel('Target Value')
-    plt.title('FVMC target sequence')
+    plt.title('FVMC target sequence for gamma = '+str(gamma))
     plt.legend()
-    plt.savefig('Q2P12.svg')
-    plt.savefig('Q2P12.jpg', dpi=300)
+    plt.savefig('Q2P12_gamma_'+str(gamma)+'.svg')
+    plt.savefig('Q2P12_gamma_'+str(gamma)+'.jpg', dpi=300)
     plt.show()
 
     episodes = [i for i in range(len(G_hist_v3_evmc))]
     plt.figure(figsize=(12,8))
+    plt.rcParams.update({'font.size': 14})
+    ax = plt.subplot(111)
     # for i in range(1,env.observation_space.n-1):
         # smooth_v = smooth_array(v_history_evmc[:,i], 1)
-    plt.plot(episodes, G_hist_v3_evmc, 'r*')
-    plt.plot(episodes, [true_V_est[3] for j in range(len(G_hist_v3_evmc))], 'k--', label='true state-value V(3)')
+    ax.plot(episodes, G_hist_v3_evmc, 'r*', linewidth=2)
+    ax.plot(episodes, [true_V_est[3] for j in range(len(G_hist_v3_evmc))], 'k--', label='true state-value V(3)', linewidth=2)
     
     plt.xlabel('Estimate sequence number')
     plt.ylabel('Target Value')
-    plt.title('EVMC target sequence')
+    plt.title('EVMC target sequence for gamma = '+str(gamma))
     plt.legend()
-    plt.savefig('Q2P13.svg')
-    plt.savefig('Q2P13.jpg', dpi=300)
+    plt.savefig('Q2P13_gamma_'+str(gamma)+'.svg')
+    plt.savefig('Q2P13_gamma_'+str(gamma)+'.jpg', dpi=300)
     plt.show()

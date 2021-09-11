@@ -65,16 +65,36 @@ if __name__ == "__main__":
     v_est_evmc, v_history_evmc = MonteCarloPrediction(env, left_policy, gamma, alpha,final_alpha,decayType, maxSteps, noEpisodes, firstVisit)
 
     episodes = [i for i in range(noEpisodes)]
+    plt.figure(figsize=(12,8))
+    plt.rcParams.update({'font.size': 14})
+    ax = plt.subplot(211)
     for i in range(env.observation_space.n):
-        plt.plot(episodes, smooth_array(v_history_fvmc[:,i], 10), label='V('+str(i)+')')
-        plt.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--')
-    plt.title('FVMC')
-    plt.legend()
-    plt.show()
+        ax.plot(episodes, smooth_array(v_history_fvmc[:,i], 10), label='V('+str(i)+')', linewidth=2)
+        ax.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--', label='V*('+str(i)+')', linewidth=2)
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])
+    # Put a legend to the right of the current axis
+    # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.xlabel('Time Steps')
+    plt.ylabel('Value function estimates')
+    plt.title('First Visit Monte Carlo')
+    # plt.show()
 
+    # plt.figure(figsize=(12,8))
+    # plt.rcParams.update({'font.size': 14})
+    ax = plt.subplot(212)
     for i in range(env.observation_space.n):
-        plt.plot(episodes, smooth_array(v_history_evmc[:,i], 10), label='V('+str(i)+')')
-        plt.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--')
-    plt.title('EVMC')
-    plt.legend()
+        ax.plot(episodes, smooth_array(v_history_evmc[:,i], 10), label='V(s='+str(i)+')', linewidth=2)
+        ax.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--', label='V*(s='+str(i)+')', linewidth=2)
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, 0.7*box.y0, box.width * 0.9, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 1))
+    # Put a legend to the right of the current axis
+    plt.xlabel('Time Steps')
+    plt.ylabel('State-value estimates')
+    plt.title('Every Visit Monte Carlo')
+    plt.savefig('q2p3.jpg', dpi=300)
+    plt.savefig('q2p3.svg')
     plt.show()

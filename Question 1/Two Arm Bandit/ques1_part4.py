@@ -3,12 +3,7 @@ from tqdm import tqdm
 import custom_bandits
 import numpy as np
 import matplotlib.pyplot as plt
-from ques1_part3a_pureExploitation import pureExploitation
-from ques1_part3b_pureExploration import pureExploration
-from ques1_part3c_epsilonGreedy import epsilonGreedy
-from ques1_part3d_DecayingEpsilonGreedy import decayingEpsilonGreedy
-from ques1_part3e_softmax import softmaxExploration
-from ques1_part3f_ucb import UCB
+from agents import pureExploitation, pureExploration, epsilonGreedy, decayingEpsilonGreedy, softmaxExploration, UCB
 from utils import smooth_array, create_Earth
 
 if __name__ == "__main__":
@@ -75,4 +70,3 @@ if __name__ == "__main__":
     plt.savefig('q1p4.svg')
     plt.savefig('q1p4.jpg', dpi=300)
     plt.show()
-    # print(reward_exploitation)

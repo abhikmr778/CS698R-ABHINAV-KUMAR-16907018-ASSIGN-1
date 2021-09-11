@@ -3,30 +3,8 @@ from tqdm import tqdm
 import custom_bandits
 import numpy as np
 import matplotlib.pyplot as plt
-from ques1_part5_3a_pureExploitation import pureExploitation
-from ques1_part5_3b_pureExploration import pureExploration
-from ques1_part5_3c_epsilonGreedy import epsilonGreedy
-from ques1_part5_3d_DecayingEpsilonGreedy import decayingEpsilonGreedy
-from ques1_part5_3e_softmax import softmaxExploration
-from ques1_part5_3f_ucb import UCB
-
-def smooth_array(data, window):
-  # utility function taken from github
-  alpha = 2 /(window + 1.0)
-  alpha_rev = 1-alpha
-  n = data.shape[0]
-
-  pows = alpha_rev**(np.arange(n+1))
-
-  scale_arr = 1/pows[:-1]
-  offset = data[0]*pows[1:]
-  pw0 = alpha*alpha_rev**(n-1)
-
-  mult = data*pw0*scale_arr
-  cumsums = mult.cumsum()
-  out = offset + cumsums*scale_arr[::-1]
-  return out
-
+from agents import pureExploitation, pureExploration, epsilonGreedy, decayingEpsilonGreedy, softmaxExploration, UCB
+from utils import smooth_array, create_Earth
 
 if __name__ == "__main__":
 
@@ -43,11 +21,12 @@ if __name__ == "__main__":
     reward_softmax = np.zeros((noOfEnvs,timeSteps))
     reward_ucb = np.zeros((noOfEnvs,timeSteps))
 
-    for i in tqdm(range(noOfEnvs),ascii=True, unit=" time-step "):
+    for i in tqdm(range(noOfEnvs),ascii=True, unit=" env "):
 
         if SEED==ANSWER_TO_EVERYTHING:
             SEED = SEED + 1
-            print('')
+            create_Earth(ANSWER_TO_EVERYTHING) 
+
         np.random.seed(SEED)
 
         sigma = np.random.uniform(0,2.5,1)
@@ -55,12 +34,12 @@ if __name__ == "__main__":
         env = gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
         env.reset()
 
-        _, _, reward_exploitation[i],_ = pureExploitation(env, timeSteps)
-        _, _, reward_exploration[i],_ = pureExploration(env, timeSteps)
-        _, _, reward_epsilonGreedy[i],_ = epsilonGreedy(env, timeSteps, epsilon=0.2)
-        _, _, reward_decayingEpsilonGreedy[i],_ = decayingEpsilonGreedy(env, timeSteps, max_epsilon=1, decay_type='lin')
-        _, _, reward_softmax[i],_ = softmaxExploration(env, timeSteps, tau=1e5, decay_type='lin')
-        _, _, reward_ucb[i],_ = UCB(env, timeSteps, c=0.4)
+        _, _, _, reward_exploitation[i], _ = pureExploitation(env, timeSteps)
+        _, _, _, reward_exploration[i], _ = pureExploration(env, timeSteps)
+        _, _, _, reward_epsilonGreedy[i], _ = epsilonGreedy(env, timeSteps, epsilon=0.1)
+        _, _, _, reward_decayingEpsilonGreedy[i], _ = decayingEpsilonGreedy(env, timeSteps, decay_till=timeSteps/2, max_epsilon=1, min_epsilon=1e-6, decay_type='exp')
+        _, _, _, reward_softmax[i], _ = softmaxExploration(env, timeSteps, decay_till=timeSteps/2, max_tau=100, min_tau = 0.005, decay_type='exp')
+        _, _, _, reward_ucb[i], _ = UCB(env, timeSteps, c=1)
 
         print(f'    Seed: {SEED} || sigma: {sigma} ')
         
@@ -76,17 +55,18 @@ if __name__ == "__main__":
     avg_reward_ucb = smooth_array(np.mean(reward_ucb, axis=0), smooth_window)
 
     plt.figure(figsize=(12,8))
-    plt.plot(episodes, avg_reward_exploitation, label='Pure Exploitation')
-    plt.plot(episodes, avg_reward_exploration, label='Pure Exploration')
-    plt.plot(episodes, avg_reward_epsilonGreedy, label='Epsilon Greedy')
-    plt.plot(episodes, avg_reward_decayingEpsilonGreedy, label='Deacying Epsilon')
-    plt.plot(episodes, avg_reward_softmax, label='Softmax')
-    plt.plot(episodes, avg_reward_ucb, label='UCB')
+    plt.rcParams.update({'font.size': 14})
+    plt.plot(episodes, avg_reward_exploitation, label='Pure Exploitation', linewidth=2)
+    plt.plot(episodes, avg_reward_exploration, label='Pure Exploration', linewidth=2)
+    plt.plot(episodes, avg_reward_epsilonGreedy, label='Epsilon Greedy', linewidth=2)
+    plt.plot(episodes, avg_reward_decayingEpsilonGreedy, label='Deacying Epsilon', linewidth=2)
+    plt.plot(episodes, avg_reward_softmax, label='Softmax', linewidth=2)
+    plt.plot(episodes, avg_reward_ucb, label='UCB', linewidth=2)
     plt.title('Average Reward for 50 Ten Armed Gaussian Environments')
     plt.xlabel('Time Steps')
     plt.ylabel('Average Reward')
     plt.legend()
-    plt.savefig('Q1P4.svg')
-    plt.savefig('Q1P4.jpg', dpi=300)
+    plt.savefig('q1p5_4.svg')
+    plt.savefig('q1p45_.jpg', dpi=300)
     plt.show()
     # print(reward_exploitation)

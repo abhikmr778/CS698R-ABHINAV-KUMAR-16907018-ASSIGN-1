@@ -44,7 +44,7 @@ if __name__ == "__main__":
     SEED = 0
     env = gym.make('random_walk-v0', seed=SEED)
     
-    gamma = 1
+    gamma = 0.99
     # True value
     left_pi = {
         0:1, # going left with prob 1
@@ -65,14 +65,16 @@ if __name__ == "__main__":
     
     episodes = [i for i in range(len(td_hist_v3))]
     plt.figure(figsize=(12,8))
+    plt.rcParams.update({'font.size': 14})
+    ax = plt.subplot(111)
     # for i in range(1,env.observation_space.n-1):
         # smooth_v = smooth_array(v_history_td[:,i], 10)
-    plt.plot(episodes, td_hist_v3,'go')
-    plt.plot(episodes, [true_V_est[3] for j in range(len(td_hist_v3))], 'k--', label='true state-value V(3)')
-    plt.title('TD target sequence')
+    ax.plot(episodes, td_hist_v3,'g*',linewidth=2)
+    ax.plot(episodes, [true_V_est[3] for j in range(len(td_hist_v3))], 'k--', label='true state-value V(3)', linewidth=2)
+    plt.title('TD target sequence for gamma = '+str(gamma))
     plt.xlabel('Estimate sequence number')
     plt.ylabel('Target Value')
     plt.legend()
-    plt.savefig('Q2P14.svg')
-    plt.savefig('Q2P14.jpg', dpi=300)
+    plt.savefig('Q2P14_gamma_'+str(gamma)+'.svg')
+    plt.savefig('Q2P14_gamma_'+str(gamma)+'.jpg', dpi=300)
     plt.show()

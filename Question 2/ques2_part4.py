@@ -56,14 +56,24 @@ if __name__ == "__main__":
     maxSteps = 250
     noEpisodes = 500
     # TD
-    firstVisit = True
     v_est_td, v_history_td = TemporalDifferencePrediction(env, left_policy, gamma, alpha,final_alpha,decayType, maxSteps, noEpisodes)
 
     
     episodes = [i for i in range(noEpisodes)]
+    plt.figure(figsize=(12,8))
+    plt.rcParams.update({'font.size': 14})
+    ax = plt.subplot(111)
     for i in range(env.observation_space.n):
-        plt.plot(episodes, smooth_array(v_history_td[:,i], 10), label='V('+str(i)+')')
-        plt.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--')
-    plt.title('TD')
-    plt.legend()
+        ax.plot(episodes, smooth_array(v_history_td[:,i], 10), label='V(s='+str(i)+')', linewidth=2)
+        ax.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--', label = 'V*(s='+str(i)+')', linewidth=2)
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.xlabel('Time Steps')
+    plt.ylabel('State-value estimates')
+    plt.title('Temporal Difference Algorithm')
+    plt.savefig('q2p4.jpg', dpi=300)
+    plt.savefig('q2p4.svg')
     plt.show()

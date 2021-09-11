@@ -61,32 +61,43 @@ if __name__ == "__main__":
 
     episodes = [i for i in range(noEpisodes)]
     plt.figure(figsize=(12,8))
+    plt.rcParams.update({'font.size': 14})
     plt.xscale("log")
+    ax = plt.subplot(111)
     for i in range(1,env.observation_space.n-1):
         # smooth_v = smooth_array(v_history_fvmc[:,i], 10)
-        plt.plot(episodes, avg_v_total_history_fvmc[:,i], label='V('+str(i)+')')
-        plt.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--')
+        ax.plot(episodes, avg_v_total_history_fvmc[:,i], label='V(s='+str(i)+')',linewidth=2)
+        ax.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--', label='V*(s='+str(i)+')',linewidth=2)
     
-    plt.xlabel('Episodes')
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
+    plt.xlabel('Episodes (log scale)')
     plt.ylabel('State-Value Function')
-    plt.title('FVMC estimates through time vs true values')
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.savefig('Q2P5.svg')
-    plt.savefig('Q2P5.jpg', dpi=300)
+    plt.title('FVMC estimates through time vs true values averaged over 50 environments')
+    plt.savefig('Q2P8.svg')
+    plt.savefig('Q2P8.jpg', dpi=300)
     plt.show()
 
 
     plt.figure(figsize=(12,8))
+    plt.rcParams.update({'font.size': 14})
     plt.xscale("log")
+    ax = plt.subplot(111)
     for i in range(1,env.observation_space.n-1):
         # smooth_v = smooth_array(v_history_evmc[:,i], 1)
-        plt.plot(episodes, avg_v_total_history_evmc[:,i], label='V('+str(i)+')')
-        plt.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--')
-    
-    plt.xlabel('Episodes')
+        ax.plot(episodes, avg_v_total_history_evmc[:,i], label='V(s='+str(i)+')', linewidth=2)
+        ax.plot(episodes, [true_V_est[i] for j in range(noEpisodes)], 'k--', label='V*(s='+str(i)+')', linewidth=2)
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
+    plt.xlabel('Episodes (log scale)')
     plt.ylabel('State-Value Function')
-    plt.title('EVMC estimates through time vs true values')
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.savefig('Q2P6.svg')
-    plt.savefig('Q2P6.jpg', dpi=300)
+    plt.title('EVMC estimates through time vs true values averaged over 50 environments')
+    plt.savefig('Q2P9.svg')
+    plt.savefig('Q2P9.jpg', dpi=300)
     plt.show()
