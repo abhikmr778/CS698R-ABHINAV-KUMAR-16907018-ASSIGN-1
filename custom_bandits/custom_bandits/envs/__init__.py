@@ -1,0 +1,2 @@
+from custom_bandits.envs.custom_twoArm_env import TwoArmBandit
+from custom_bandits.envs.custom_tenArm_env import TenArmGaussianBandit
