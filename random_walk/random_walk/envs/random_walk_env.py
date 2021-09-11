@@ -12,11 +12,13 @@ import numpy as np
 class RandomWalk(gym.Env):
     def __init__(self, alpha=0.5, beta=0.5, seed=0):
         super(RandomWalk, self).__init__()
-        self.seed(seed)
-        N_DISCRETE_ACTIONS = 2
+        
         LEFT = 0
         RIGHT = 1
+        N_DISCRETE_ACTIONS = 2
         N_DISCRETE_STATES = 7
+        
+        self.seed(seed)
         self.alpha = alpha
         self.beta = beta
         self.action_space = spaces.Discrete(N_DISCRETE_ACTIONS)
@@ -49,8 +51,10 @@ class RandomWalk(gym.Env):
         self.P = P
 
     def step(self, action):
+        # terminal state do nothing
         if self.agent_position == 0 or self.agent_position == 6:
             return self.agent_position, 0, True, {}
+        # non terminal state, choose action according to alpha = beta = 0.5
         else:
             if action == 0:
                 if np.random.uniform() < self.alpha:

@@ -44,17 +44,21 @@ class TwoArmBandit(gym.Env):
         self.seed(seed)
 
     def step(self, action):
-        # get experience tuple from MDP dynamics
+        # get transition from MDP dynamics
         probabilities = []
         next_states = []
         rewards = []
         dones = []
+
+        # sample transition according to the probabilities of transition function
         for dynamic in self.P[self.agent_position][action]:
             probabilities.append(dynamic[0])
         idx = [i for i in range(len(self.P[self.agent_position][action]))]
+        
         j = int(np.random.choice(a=idx,size=1,p=probabilities))
-        # print(probabilities, j)
+        
         _, observation, reward, done = self.P[self.agent_position][action][j]
+        
         # update agent's position
         self.agent_position = observation
         info = {}

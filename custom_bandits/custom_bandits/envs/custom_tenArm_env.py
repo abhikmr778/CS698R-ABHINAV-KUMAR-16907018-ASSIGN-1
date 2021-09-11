@@ -16,6 +16,7 @@ class TenArmGaussianBandit(gym.Env):
 
     def __init__(self, mu = 0, sigma_square=1, seed=0):
         super(TenArmGaussianBandit, self).__init__()
+
         N_DISCRETE_ACTIONS = 10
         N_DISCRETE_STATES = 11
         
@@ -28,13 +29,15 @@ class TenArmGaussianBandit(gym.Env):
         self.mu = mu
         self.sigma_square = sigma_square
         self.q_value = np.random.normal(self.mu, np.sqrt(self.sigma_square), self.action_space.n)
+
+        # sample rewards at each time step from a gaussian with mean as q_value and given sigma
         self.rewards = np.random.normal(self.q_value, np.sqrt(self.sigma_square), self.action_space.n)
 
         self.P = self.set_MDP()
         self.agent_position = self.reset()
 
     def set_MDP(self):
-        # print(self.rewards)
+        # sets the P data structure as told in lectures
         P = {}
         for i in range(0,self.observation_space.n):
             P[i] = {}
@@ -47,9 +50,11 @@ class TenArmGaussianBandit(gym.Env):
         return P
     
     def step(self, action):
-        if self.agent_position != 0:
+
+        if self.agent_position != 0: # if terminal state then do nothing
             return self.agent_position, 0, True, {}
-        else:
+
+        else: # if non-terminal state then sample rewards and collect experience
             self.rewards = np.random.normal(self.q_value, np.sqrt(self.sigma_square), self.action_space.n)
             self.set_MDP()
             self.agent_position = action+1
@@ -60,9 +65,7 @@ class TenArmGaussianBandit(gym.Env):
 
     def reset(self):
         self.agent_position = 0
-        # self.rewards = np.random.normal(self.q_value, np.sqrt(self.sigma_square), self.action_space.n)
-        # self.set_MDP()
-        return self.agent_position  # reward, done, info can't be included
+        return self.agent_position 
     
     def seed(self, seed=0):
         np.random.seed(seed)
