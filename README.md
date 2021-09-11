@@ -55,6 +55,7 @@
 - solutions contain function definitions and are documented
 
 ## Dependencies
+- python 3
 - numpy
 - gym
 - matplotlib
