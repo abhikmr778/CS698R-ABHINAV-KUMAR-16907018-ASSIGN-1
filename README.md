@@ -15,6 +15,11 @@
 - import random_walk
 - For Random Walk use gym.make('random_walk-v0', seed=SEED)
 
+## About Environments
+- all environments Two Arm Bernoulli Bandit, Ten Arm Gaussian Bandit and Random Walk contain underlying MDP data structure as was mentioned in lectures
+- this MDP data structure is used for true value calculations
+
+
 ## Question 1
 - contains two directories:
     - Ten Arm Bandit: contains solutions to all parts involving ten arm bandit
