@@ -1,18 +1,40 @@
 # CS698R-Abhinav-Kumar-16907018-ASSIGN-1
 
+## Directory Structure
+- CS698R-Abhinav-Kumar-16907018-ASSIGN-1/
+    - custum_bandits/
+        - setup.py
+        - custum_bandits/
+            - \_\_init\_\_.py
+            - envs/
+                - \_\_init\_\_.py
+                - custom_tenArm_env.py
+                - custom_twoArm_env.py
+    - random_walk/
+        - setup.py
+        - random_walk/
+            - \_\_init\_\_.py
+            - envs/
+                - \_\_init\_\_.py
+                - random_walk_env.py
+
+    - Question 1/
+        - Ten Arm Bandit/ .. solutions ..
+        - Two Arm Bandit/ .. solutions ..
+    - Question 2/ .. solutions ..
+
 ## How to install environments
 - Download the zip, extract
-- Move to the parent directory CS698R-Abhinav-Kumar-16907018-ASSIGN-1
+- Move to the parent directory CS698R-Abhinav-Kumar-16907018-ASSIGN-1/
 - Run 'pip install custom_bandits' to install Two-Armed Bernoulli Bandit and Ten-Armed Gaussian Bandit
 - Run 'pip install random_walk' to install the Random Walk Environment
 
 ## Creating environments
 - import gym
 - import custom_bandit
+- import random_walk
 - For Two-Armed Bernoulli Bandit use gym.make('twoArm_bandits-v0', alpha=alpha, beta=beta, seed=SEED)
 - For Ten-Armed Gaussian Bandit use gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
-
-- import random_walk
 - For Random Walk use gym.make('random_walk-v0', seed=SEED)
 
 ## About Environments
@@ -31,3 +53,10 @@
 ## Question 2
 - contains solutions to Random Walk environment
 - solutions contain function definitions and are documented
+
+## Dependencies
+- numpy
+- gym
+- matplotlib
+- scipy
+- tqdm
