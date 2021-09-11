@@ -13,10 +13,12 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     
+    # parameters
     SEED = 0
     ANSWER_TO_EVERYTHING = 42
 
     noOfEnvs = 50
+    gamma = 0.99
     decayType = 'exp'
     maxSteps = 250
     noEpisodes = 500
@@ -24,16 +26,20 @@ if __name__ == "__main__":
     v_total_history_fvmc = np.zeros((noOfEnvs,noEpisodes,ENV_OBSERVATION_SPACE))
     v_total_history_evmc = np.zeros((noOfEnvs,noEpisodes,ENV_OBSERVATION_SPACE))
     
+    # for every env
     for i in tqdm(range(noOfEnvs), ascii=True, unit=" env "):
 
+        # skip 42
         if SEED==ANSWER_TO_EVERYTHING:
             SEED = SEED + 1
-            create_Earth(ANSWER_TO_EVERYTHING)
+            create_Earth(ANSWER_TO_EVERYTHING) # read hitchhiker's guide to galaxy if not yet read
         np.random.seed(SEED)
 
+        # create env
         env = gym.make('random_walk-v0', seed=SEED)
         env.reset()
-        # True value
+        
+        # True state value calculation
         left_pi = {
             0:1, # going left with prob 1
             1:0 # going right with prob 0
@@ -41,10 +47,13 @@ if __name__ == "__main__":
         policyEvaluator = policyEvaluation(left_pi,gamma=0.99, theta=1e-10, max_iterations=1000)
         true_V_est = policyEvaluator.evaluate(env)
         
+        # left policy
         left_policy = np.array([0 for i in range(env.observation_space.n)])
-        gamma = 0.99
         final_alpha = 0.01
+
+        # generate alpha 
         alpha = np.random.uniform(final_alpha,1)
+        
         # FVMC
         firstVisit = True
         _, v_total_history_fvmc[i] = MonteCarloPrediction(env, left_policy, gamma, alpha, final_alpha, decayType, maxSteps, noEpisodes, firstVisit)
@@ -54,8 +63,10 @@ if __name__ == "__main__":
         _, v_total_history_evmc[i] = MonteCarloPrediction(env, left_policy, gamma, alpha, final_alpha, decayType, maxSteps, noEpisodes, firstVisit)
         print(f'    Seed: {SEED} || alpha: {alpha} ')
         
+        # increment seed
         SEED = SEED + 1
 
+    # average out results and plot value function estimates
     avg_v_total_history_fvmc = np.mean(v_total_history_fvmc, axis=0)
     avg_v_total_history_evmc = np.mean(v_total_history_evmc, axis=0) 
 

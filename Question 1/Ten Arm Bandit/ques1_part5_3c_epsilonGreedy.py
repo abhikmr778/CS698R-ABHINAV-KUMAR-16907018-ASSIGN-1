@@ -5,17 +5,25 @@ import matplotlib.pyplot as plt
 from agents import epsilonGreedy
 
 if __name__ == "__main__":
+
+    # parameters
     sigma = 1
     SEED = 0
     epsilon = 0.1
     maxEpisodes = 1000
+
+    # create env
     env = gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
     env.reset()
+    
+    # run the agent
     Q_estimates, action_history, optimal_action_history, reward_history, regret_history = epsilonGreedy(env,maxEpisodes,epsilon)
 
+    # check values
     print(env.q_value)
     print(Q_estimates[-1])
 
+    # plotting the estimates vs true value
     episodes = [i for i in range(maxEpisodes)]
     plt.figure(figsize=(12,8))
     plt.rcParams.update({'font.size': 16})

@@ -6,12 +6,20 @@ from agents import pureExploration
 
 
 if __name__ == "__main__":
+
+    # parameters
     sigma = 1
     SEED = 0
     maxEpisodes = 20
+
+    # creating the environment
     env = gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
     env.reset()
+
+    # running the agent
     Q_estimates, action_history, optimal_action_history, reward_history, regret_history = pureExploration(env,maxEpisodes)
+    
+    
     print(f'--------------------SEED: {SEED}------------------------')
     print(f'True Q values: {env.q_value}')
     print(f'Final Q Estimates: {Q_estimates[-1,:]}')

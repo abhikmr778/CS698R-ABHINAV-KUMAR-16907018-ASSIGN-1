@@ -16,6 +16,7 @@ from policyevaluation import policyEvaluation
 
 if __name__ == "__main__":
 
+    # parameters
     SEED = 0
     LEFT = 0
     RIGHT = 1    

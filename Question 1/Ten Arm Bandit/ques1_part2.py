@@ -14,8 +14,10 @@ from policyevaluation import policyEvaluation
 
 if __name__ == "__main__":
 
+    # parameters
     SEED = 0
     sigma = 1
+
     print('-------Testing Ten Arm Bandit Environment-------')
     for i in range(10):
         SEED = i

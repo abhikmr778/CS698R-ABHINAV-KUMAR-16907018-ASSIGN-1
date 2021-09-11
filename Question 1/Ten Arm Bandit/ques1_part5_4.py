@@ -8,12 +8,13 @@ from utils import smooth_array, create_Earth
 
 if __name__ == "__main__":
 
+    # parameters
     SEED = 0
     ANSWER_TO_EVERYTHING = 42
-
     timeSteps = 1000
     noOfEnvs = 50
 
+    # to store rewards across environments for all 6 agents
     reward_exploitation = np.zeros((noOfEnvs,timeSteps))
     reward_exploration = np.zeros((noOfEnvs,timeSteps))
     reward_epsilonGreedy = np.zeros((noOfEnvs,timeSteps))
@@ -21,19 +22,24 @@ if __name__ == "__main__":
     reward_softmax = np.zeros((noOfEnvs,timeSteps))
     reward_ucb = np.zeros((noOfEnvs,timeSteps))
 
+    # for every env
     for i in tqdm(range(noOfEnvs),ascii=True, unit=" env "):
 
+        # skip 42
         if SEED==ANSWER_TO_EVERYTHING:
             SEED = SEED + 1
-            create_Earth(ANSWER_TO_EVERYTHING) 
+            create_Earth(ANSWER_TO_EVERYTHING) # read hitchhiker's guide to galaxy if not yet read
 
         np.random.seed(SEED)
 
+        # generating sigma
         sigma = np.random.uniform(0,2.5,1)
 
+        # create env
         env = gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
         env.reset()
 
+        # store reward history for every env
         _, _, _, reward_exploitation[i], _ = pureExploitation(env, timeSteps)
         _, _, _, reward_exploration[i], _ = pureExploration(env, timeSteps)
         _, _, _, reward_epsilonGreedy[i], _ = epsilonGreedy(env, timeSteps, epsilon=0.1)
@@ -43,8 +49,10 @@ if __name__ == "__main__":
 
         print(f'    Seed: {SEED} || sigma: {sigma} ')
         
+        # increment seed
         SEED = SEED + 1
 
+    # average out results across environments and smooth the values and plot
     episodes = [i for i in range(timeSteps)]
     smooth_window = 50
     avg_reward_exploitation = smooth_array(np.mean(reward_exploitation, axis=0), smooth_window)
@@ -69,4 +77,3 @@ if __name__ == "__main__":
     plt.savefig('q1p5_4.svg')
     plt.savefig('q1p45_.jpg', dpi=300)
     plt.show()
-    # print(reward_exploitation)

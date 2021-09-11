@@ -7,20 +7,28 @@ from agents import UCB
 
 
 if __name__ == "__main__":
+
+    # parameters
+
     sigma = 1
     SEED = 0
     c = [0.1, 1, 5, 10]
     noOfc = 4
     maxEpisodes = 1000
     reward_history = np.zeros((noOfc, maxEpisodes))
+    
+    # for every value of c
     for i in range(noOfc):
+        # create env
         env = gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
         env.reset()
+        # run agent for c[i]
         Q_estimates, action_history, optimal_action_history, reward_history[i], regret_history = UCB(env,maxEpisodes,c[i])
 
     print(env.q_value)
     print(Q_estimates[-1])
 
+    # plot and compare rewards corresponding to different values of c
     episodes = [i for i in range(maxEpisodes)]
     plt.figure(figsize=(12,8))
     plt.rcParams.update({'font.size': 14})

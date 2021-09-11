@@ -2,7 +2,7 @@ import numpy as np
 import gym
 
 class policyEvaluation:
-
+    # follows algorithm from lectures
     def __init__(self, policy, gamma=0.99, theta=1e-3, max_iterations=100):
         # policy distn
         self.pi = policy

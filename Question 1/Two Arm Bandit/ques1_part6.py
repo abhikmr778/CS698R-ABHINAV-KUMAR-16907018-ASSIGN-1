@@ -9,19 +9,14 @@ from utils import smooth_array, create_Earth
 
 if __name__ == "__main__":
 
+    # parameters
     SEED = 0
     ANSWER_TO_EVERYTHING = 42
 
     timeSteps = 1000
     noOfEnvs = 50
 
-    reward_exploitation = np.zeros((noOfEnvs,timeSteps))
-    reward_exploration = np.zeros((noOfEnvs,timeSteps))
-    reward_epsilonGreedy = np.zeros((noOfEnvs,timeSteps))
-    reward_decayingEpsilonGreedy = np.zeros((noOfEnvs,timeSteps))
-    reward_softmax = np.zeros((noOfEnvs,timeSteps))
-    reward_ucb = np.zeros((noOfEnvs,timeSteps))
-
+    # to store regret across 50 envs
     regret_exploitation = np.zeros((noOfEnvs,timeSteps))
     regret_exploration = np.zeros((noOfEnvs,timeSteps))
     regret_epsilonGreedy = np.zeros((noOfEnvs,timeSteps))
@@ -29,20 +24,25 @@ if __name__ == "__main__":
     regret_softmax = np.zeros((noOfEnvs,timeSteps))
     regret_ucb = np.zeros((noOfEnvs,timeSteps))
 
+    # for every env
     for i in tqdm(range(noOfEnvs),ascii=True, unit=" time-step "):
 
+        # skip 42
         if SEED==ANSWER_TO_EVERYTHING:
             SEED = SEED + 1
-            create_Earth(ANSWER_TO_EVERYTHING) 
+            create_Earth(ANSWER_TO_EVERYTHING) # read hitchhiker's guide to galaxy if not yet read
 
         np.random.seed(SEED)
-
+        
+        # generate alpha beta
         alpha = np.random.uniform()
         beta = np.random.uniform()
 
+        # create env
         env = gym.make('twoArm_bandits-v0', alpha=alpha, beta=beta, seed=SEED)
         env.reset()
 
+        # store regret history for every env
         _, _, _, _, regret_exploitation[i] = pureExploitation(env, timeSteps)
         _, _, _, _, regret_exploration[i] = pureExploration(env, timeSteps)
         _, _, _, _, regret_epsilonGreedy[i] = epsilonGreedy(env, timeSteps, epsilon=0.1)
@@ -51,12 +51,12 @@ if __name__ == "__main__":
         _, _, _, _, regret_ucb[i] = UCB(env, timeSteps, c=0.1)
 
         print(f'    Seed: {SEED} || alpha: {alpha} || beta: {beta}')
-        
+
+        # increment seed
         SEED = SEED + 1
 
+    # average regret across envs and plot
     episodes = [i for i in range(timeSteps)]
-    # smooth_window = 5
-
     avg_regret_exploitation = np.mean(regret_exploitation, axis=0)
     avg_regret_exploration = np.mean(regret_exploration, axis=0)
     avg_regret_epsilonGreedy = np.mean(regret_epsilonGreedy, axis=0)

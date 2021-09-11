@@ -8,23 +8,29 @@ from agents import decayingEpsilonGreedy
 
 if __name__ == "__main__":
     
+    # parameters
     sigma = 1
     SEED = 0
     maxEpisodes = 1000
     decay_type = ['lin','exp']
     noOfDecays = 2
-    reward_history = np.zeros((noOfDecays, maxEpisodes))
     max_epsilon = 1
     min_epsilon = 1e-6
     decay_till = maxEpisodes/2
+    reward_history = np.zeros((noOfDecays, maxEpisodes)) # will store rewards for both decay types
+
+    # for every decay type
     for i in range(noOfDecays):
+        # create env
         env = gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
         env.reset()
+        # run agent
         Q_estimates, action_history, optimal_action_history, reward_history[i], regret_history = decayingEpsilonGreedy(env,maxEpisodes,decay_till,max_epsilon,min_epsilon, decay_type[i])
     
     print(env.q_value)
     print(Q_estimates[-1])
 
+    # plot and compare results of linear and exponential
     episodes = [i for i in range(maxEpisodes)]
     plt.figure(figsize=(12,8))
     plt.rcParams.update({'font.size': 14})

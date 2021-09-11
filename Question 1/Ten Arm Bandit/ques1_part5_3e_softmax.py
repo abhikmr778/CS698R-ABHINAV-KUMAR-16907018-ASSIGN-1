@@ -7,6 +7,8 @@ from utils import smooth_array
 from agents import softmaxExploration
 
 if __name__ == "__main__":
+
+    # parameters
     sigma = 1
     SEED = 0
     max_tau = 1e5
@@ -17,14 +19,18 @@ if __name__ == "__main__":
     decay_till = maxEpisodes/2
     reward_history = np.zeros((noOfDecays, maxEpisodes))
 
+    # for every decay type
     for i in range(noOfDecays):
+        # create env
         env = gym.make('tenArmGaussian_bandits-v0', sigma_square=sigma, seed=SEED)
         env.reset()
+        # run agent
         Q_estimates, action_history, optimal_action_history, reward_history[i], regret_history = softmaxExploration(env,maxEpisodes,decay_till,max_tau,min_tau,decay_type[i])
     
     print(env.q_value)
     print(Q_estimates[-1])
 
+    # compare decay types by plotting their rewards
     episodes = [i for i in range(maxEpisodes)]
     plt.figure(figsize=(12,8))
     plt.rcParams.update({'font.size': 14})

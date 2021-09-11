@@ -2,6 +2,7 @@ import numpy as np
 
 def smooth_array(data, window):
   # utility function taken from github
+  # helps smoothing the values
   alpha = 2 /(window + 1.0)
   alpha_rev = 1-alpha
   n = data.shape[0]

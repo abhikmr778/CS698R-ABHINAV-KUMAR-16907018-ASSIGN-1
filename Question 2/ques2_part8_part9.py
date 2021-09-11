@@ -9,14 +9,17 @@ from ques2_part3 import MonteCarloPrediction
 from true_value_randomWalk import policyEvaluation 
 from tqdm import tqdm
 
-
+# same as ques2_part5_part6
+# only change is log scale
 
 if __name__ == "__main__":
     
+    # parameters
     SEED = 0
     ANSWER_TO_EVERYTHING = 42
 
     noOfEnvs = 50
+    gamma = 0.99
     decayType = 'exp'
     maxSteps = 250
     noEpisodes = 500
@@ -24,16 +27,20 @@ if __name__ == "__main__":
     v_total_history_fvmc = np.zeros((noOfEnvs,noEpisodes,ENV_OBSERVATION_SPACE))
     v_total_history_evmc = np.zeros((noOfEnvs,noEpisodes,ENV_OBSERVATION_SPACE))
     
+    # for every env
     for i in tqdm(range(noOfEnvs), ascii=True, unit=" env "):
 
+        # skip 42
         if SEED==ANSWER_TO_EVERYTHING:
             SEED = SEED + 1
-            create_Earth(ANSWER_TO_EVERYTHING)
+            create_Earth(ANSWER_TO_EVERYTHING) # read hitchhiker's guide to galaxy if not yet read
         np.random.seed(SEED)
 
+        # create env
         env = gym.make('random_walk-v0', seed=SEED)
         env.reset()
-        # True value
+        
+        # True state value calculation
         left_pi = {
             0:1, # going left with prob 1
             1:0 # going right with prob 0
@@ -41,10 +48,13 @@ if __name__ == "__main__":
         policyEvaluator = policyEvaluation(left_pi,gamma=0.99, theta=1e-10, max_iterations=1000)
         true_V_est = policyEvaluator.evaluate(env)
         
+        # left policy
         left_policy = np.array([0 for i in range(env.observation_space.n)])
-        gamma = 0.99
         final_alpha = 0.01
+
+        # generate alpha 
         alpha = np.random.uniform(final_alpha,1)
+        
         # FVMC
         firstVisit = True
         _, v_total_history_fvmc[i] = MonteCarloPrediction(env, left_policy, gamma, alpha, final_alpha, decayType, maxSteps, noEpisodes, firstVisit)
@@ -54,15 +64,16 @@ if __name__ == "__main__":
         _, v_total_history_evmc[i] = MonteCarloPrediction(env, left_policy, gamma, alpha, final_alpha, decayType, maxSteps, noEpisodes, firstVisit)
         print(f'    Seed: {SEED} || alpha: {alpha} ')
         
+        # increment seed
         SEED = SEED + 1
 
+    # average out results and plot value function estimates
     avg_v_total_history_fvmc = np.mean(v_total_history_fvmc, axis=0)
     avg_v_total_history_evmc = np.mean(v_total_history_evmc, axis=0) 
 
     episodes = [i for i in range(noEpisodes)]
     plt.figure(figsize=(12,8))
     plt.rcParams.update({'font.size': 14})
-    plt.xscale("log")
     ax = plt.subplot(111)
     for i in range(1,env.observation_space.n-1):
         # smooth_v = smooth_array(v_history_fvmc[:,i], 10)
@@ -74,11 +85,11 @@ if __name__ == "__main__":
     ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
-    plt.xlabel('Episodes (log scale)')
+    plt.xlabel('Episodes')
     plt.ylabel('State-Value Function')
     plt.title('FVMC estimates through time vs true values averaged over 50 environments')
-    plt.savefig('Q2P8.svg')
-    plt.savefig('Q2P8.jpg', dpi=300)
+    plt.savefig('Q2P5.svg')
+    plt.savefig('Q2P5.jpg', dpi=300)
     plt.show()
 
 
@@ -95,9 +106,9 @@ if __name__ == "__main__":
     ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
-    plt.xlabel('Episodes (log scale)')
+    plt.xlabel('Episodes')
     plt.ylabel('State-Value Function')
     plt.title('EVMC estimates through time vs true values averaged over 50 environments')
-    plt.savefig('Q2P9.svg')
-    plt.savefig('Q2P9.jpg', dpi=300)
+    plt.savefig('Q2P6.svg')
+    plt.savefig('Q2P6.jpg', dpi=300)
     plt.show()
